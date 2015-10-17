@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/mount.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -76,6 +77,13 @@ unsigned int new_seed(void)
 
 bool init_random(void)
 {
+	if (mount("udev", "/dev", "devtmpfs", 0, "")) {
+		printf("cannot mount /dev: %s\n", strerror(errno));
+		return FALSE;
+	} else {
+		printf("mounted /dev\n");
+	}
+
 	urandomfd = open("/dev/urandom", O_RDONLY);
 	if (urandomfd == -1) {
 		printf("urandom: %s\n", strerror(errno));
