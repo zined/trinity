@@ -23,6 +23,7 @@
 #include "trinity.h"
 #include "uid.h"
 #include "version.h"
+#include "kmsg.h"
 
 char *progname = NULL;
 
@@ -108,6 +109,9 @@ int main(int argc, char* argv[])
 	max_children = num_online_cpus;	/* possibly overridden in params. */
 
 	if (init_random() == FALSE)
+		exit(EXIT_FAILURE);
+
+	if (kmsg_open() != 0)
 		exit(EXIT_FAILURE);
 
 	set_seed(0);
@@ -217,6 +221,8 @@ cleanup_fds:
 	destroy_initial_mappings();
 
 	shutdown_logging();
+
+	kmsg_close();
 
 	ret = set_exit_code(shm->exit_reason);
 out:
