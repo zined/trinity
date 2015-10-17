@@ -74,7 +74,7 @@ void do_uid0_check(void)
 	unsigned int i;
 
 	/* if we're already unprivileged, then don't worry. */
-	if (orig_uid != 0)
+	if (orig_uid != 0 || 1)
 		return;
 
 	if (dangerous == TRUE) {
