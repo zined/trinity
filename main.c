@@ -17,7 +17,6 @@
 #include "shm.h"
 #include "syscall.h"
 #include "trinity.h"
-#include "kmsg.h"
 
 /* exit() wrapper to clear the pid before exiting, so the
  * watchdog doesn't spin forever on a dead pid.
@@ -318,16 +317,9 @@ const char * decode_exit(void)
 
 void main_loop(void)
 {
-	int kmsg_buffer_size = 4096;
-	char kmsg_buffer[kmsg_buffer_size + 1];
-
 	while (shm->exit_reason == STILL_RUNNING) {
 		if (shm->running_childs < max_children)
 			fork_children();
-
-		while (kmsg_read(kmsg_buffer, kmsg_buffer_size) == 0) {
-			printf("KERNEL says: %s\n", kmsg_buffer);
-		}
 
 		handle_children();
 	}
